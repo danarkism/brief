@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Título actualizado -->
+    <title>Brief: Creación de Contenidos | Pescadería Vilma</title>
+    
+    <!-- Carga de TailwindCSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Configuración de Tailwind y Fuentes -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.7s ease-out forwards', /* Cambiado de 'fade-in-up' a 'fade-in' y 'fadeInUp' a 'fadeIn' */
+                    },
+                    keyframes: {
+                        fadeIn: { /* Renombrado de fadeInUp */
+                            '0%': { opacity: '0' }, /* Eliminado transform */
+                            '100%': { opacity: '1' }, /* Eliminado transform */
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Carga de la fuente Inter desde Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Estilos personalizados para la página -->
+    <style>
+        body {
+            animation: fadeIn 1s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Estilo base para los pasos del formulario */
+        .form-step {
+            display: none; /* Oculto por defecto, JS lo maneja */
+        }
+
+        /* Clase que agregará el JS para animar la entrada */
+        .step-visible {
+            display: block;
+            animation: fadeIn 0.7s ease-out forwards; /* Cambiado de fadeInUp */
+        }
+
+        /* Estilos personalizados para los campos del formulario (UI Mejorada) */
+        .form-input-text {
+            @apply w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-lg shadow-sm transition-all duration-300 ease-in-out text-base; /* Added text-base */
+            @apply focus:ring-2 focus:ring-teal-500 focus:border-transparent focus:outline-none focus:bg-white;
+        }
+        
+        .form-textarea {
+            @apply w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-lg shadow-sm transition-all duration-300 ease-in-out h-36 text-base; /* Increased height to h-36, added text-base */
+            @apply focus:ring-2 focus:ring-teal-500 focus:border-transparent focus:outline-none focus:bg-white;
+        }
+        
+        .form-label {
+            @apply block text-lg font-semibold text-slate-900 mb-3;
+        }
+        
+        .form-description {
+            @apply text-sm text-slate-500 mb-4;
+        }
+
+        .form-checkbox, .form-radio {
+            @apply h-5 w-5 text-teal-600 rounded border-gray-300 focus:ring-teal-500 transition duration-150;
+        }
+        
+        /* Estilos para botones de navegación */
+        .nav-btn {
+            @apply px-6 py-3 rounded-lg font-semibold shadow-sm transition-all duration-300 ease-in-out transform border; /* Añadida la clase 'border' base */
+            @apply focus:outline-none focus:ring-2 focus:ring-offset-2;
+        }
+        
+        .nav-btn-next {
+            @apply bg-teal-600 text-white border-teal-600 hover:bg-teal-700 focus:ring-teal-500; /* Añadida 'border-teal-600' */
+        }
+        
+        .nav-btn-prev {
+            /* Estilo "outline" para mayor visibilidad */
+            @apply bg-transparent text-teal-700 border-teal-600 hover:bg-teal-50 focus:ring-teal-500;
+        }
+        
+        .nav-btn:disabled {
+            @apply opacity-50 cursor-not-allowed;
+        }
+
+    </style>
+</head>
+<body class="bg-slate-50 font-sans text-slate-800 antialiased">
+
+    <!-- Contenedor principal -->
+    <div class="container mx-auto max-w-3xl px-6 py-12 sm:py-20">
+
+        <!-- Div para el mensaje de éxito -->
+        <div id="success-message" class="hidden">
+            <!-- Esta tarjeta usa 'step-visible' para animar su entrada también -->
+            <div class="step-visible bg-white p-10 rounded-2xl shadow-xl text-center">
+                <svg class="w-16 h-16 text-green-500 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <h1 class="text-3xl font-bold text-slate-900 mb-2">¡Brief Enviado!</h1>
+                <p class="text-lg text-slate-600">Muchas gracias por tu tiempo, Ezquiel. He recibido tus respuestas.</p>
+                <p class="text-slate-500 mt-4">Me pondré a trabajar en la estrategia y te contactaré pronto para nuestra próxima reunión.</p>
+            </div>
+        </div>
+
+        <!-- Encabezado (sin logo) -->
+        <header class="mb-8 text-center">
+            <!-- Título Actualizado -->
+            <h1 class="text-3xl sm:text-4xl font-bold text-slate-900 mb-3">Brief para creación de contenidos digitales y estrategia de marketing</h1>
+            <h2 class="text-2xl sm:text-3xl font-semibold text-teal-700">Pescadería Vilma</h2>
+        </header>
+
+        <!-- Barra de Progreso -->
+        <div class="w-full bg-slate-200 rounded-full h-2.5 mb-8 overflow-hidden">
+            <div id="progress-bar" class="bg-teal-600 h-2.5 rounded-full transition-all duration-500 ease-out" style="width: 0%"></div>
+        </div>
+
+        <!-- Formulario del Brief -->
+        <form id="brief-form" action="https://formspree.io/f/myzbkayy" method="POST">
+            
+            <!-- Los pasos del formulario están anidados aquí -->
+            
+            <!-- Paso 0: Introducción -->
+            <div class="form-step bg-white p-6 sm:p-8 rounded-2xl shadow-lg">
+                <h3 class="text-2xl font-bold text-slate-900 mb-4">¡Hola, Ezquiel!</h3>
+                <p class="text-slate-600 leading-relaxed mb-4">
+                    Este documento es nuestro mapa para empezar a trabajar. El objetivo es entender el alma, el sazón y la historia de tu restaurante desde tu perspectiva.
+                </p>
+                <p class="text-slate-600 leading-relaxed mb-4">
+                    Tú eres el experto en mariscos y en el negocio familiar; yo soy el experto en hacer que esos platillos se vean irresistibles en video y atraigan más clientes. Tus respuestas me ayudarán a crear una estrategia de contenido que haga que la gente quiera venir a probar.
+                </p>
+                <p class="font-medium text-teal-700">¡Tómate tu tiempo! No hay respuestas incorrectas.</p>
+            </div>
+
+            <!-- Paso 1: El Corazón del Negocio -->
+            <div class="form-step bg-white p-6 sm:p-8 rounded-2xl shadow-lg">
+                <h2 class="text-2xl font-bold text-slate-900 mb-2">1. El Corazón del Negocio</h2>
+                <p class="text-slate-600 mb-6">El hecho de ser un negocio familiar es su mayor fortaleza. Es lo que les da un "sazón" único.</p>
+                <div class="space-y-6">
+                    <div class="flex flex-col"> <!-- Added flex flex-col -->
+                        <label for="s1_historia" class="form-label">¿Cómo y cuándo empezó la coctelería?</label>
+                        <p class="form-description">Ej: "Mis papás empezaron con una carreta de ceviches...", "Era el sueño de mi abuelo...".</p>
+                        <textarea id="s1_historia" name="s1_historia" class="form-textarea" rows="3"></textarea>
+                    </div>
+                    <div class="flex flex-col"> <!-- Added flex flex-col -->
+                        <label for="s1_nombre" class="form-label">¿La historia detrás del nombre? (Si la tiene)</label>
+                        <textarea id="s1_nombre" name="s1_nombre" class="form-textarea" rows="2"></textarea>
+                    </div>
+                    <div class="flex flex-col"> <!-- Added flex flex-col -->
+                        <label for="s1_sazon" class="form-label">¿Cuál dirías que es el "sazón secreto" o la filosofía de la cocina?</label>
+                        <p class="form-description">Ej: "Todo es fresquísimo", "La receta de la salsa es de mi abuela", "Aquí servimos bien (abundante)".</p>
+                        <textarea id="s1_sazon" name="s1_sazon" class="form-textarea" rows="3"></textarea>
+                    </div>
+                    <div class="flex flex-col"> <!-- Added flex flex-col -->
+                        <label for="s1_3palabras" class="form-label">Si tuvieras que describir tu restaurante en 3 palabras, ¿cuáles serían?</label>
+                        <p class="form-description">Ej: Fresco, Familiar, Abundante, Tradicional, El mejor de...</p>
+                        <input type="text" id="s1_3palabras" name="s1_3palabras" class="form-input-text">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Paso 2: Los Platillos Estrella -->
+            <div class="form-step bg-white p-6 sm:p-8 rounded-2xl shadow-lg">
+                <h2 class="text-2xl font-bold text-slate-900 mb-2">2. Los Platillos Estrella</h2>
+                <p class="text-slate-600 mb-6">Aquí es donde creamos el "antojo". Necesito saber qué vamos a presumir.</p>
+                <div class="space-y-6">
+                    <div class="flex flex-col"> <!-- Added flex flex-col -->
+                        <label for="s2_top5" class="form-label">¿Cuáles son tus 5 platillos más vendidos? (Los que todo el mundo pide sí o sí)</label>
+                        <textarea id="s2_top5" name="s2_top5" class="form-textarea" rows="4"></textarea>
+                    </div>
+                    <div class="flex flex-col"> <!-- Added flex flex-col -->
+                        <label for="s2_casa" class="form-label">¿Cuál es el platillo "de la casa"? (Ese platillo que es su firma, el que los hace únicos)</label>
+                        <textarea id="s2_casa" name="s2_casa" class="form-textarea" rows="2"></textarea>
+                    </div>
+                    <div class="flex flex-col"> <!-- Added flex flex-col -->
+                        <label for="s2_impulsar" class="form-label">¿Cuál es el platillo que TÚ crees que es increíble, pero que la gente pide poco? (Este es el que vamos a impulsar)</label>
+                        <textarea id="s2_impulsar" name="s2_impulsar" class="form-textarea" rows="2"></textarea>
+                    </div>
+                    <div class="flex flex-col"> <!-- Added flex flex-col -->
+                        <label for="s2_fotogenico" class="form-label">¿Cuál es el platillo más "fotogénico" o impresionante?</label>
+                        <p class="form-description">Ej: "La torre de mariscos", "Un molcajete hirviendo", "Un pescado zarandeado".</p>
+                        <textarea id="s2_fotogenico" name="s2_fotogenico" class="form-textarea" rows="2"></textarea>
+                    </div>
+                    <div class="flex flex-col"> <!-- Added flex flex-col -->
+                        <label for="s2_bebida" class="form-label">Hablemos de bebidas: ¿Cuál es la bebida estrella?</label>
+                        <p class="form-description">Ej: "Micheladas", "Aguas de...", "Algún cóctel especial".</p>
+                        <textarea id="s2_bebida" name="s2_bebida" class="form-textarea" rows="2"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Paso 3: El Cliente y el Ambiente -->
+            <div class="form-step bg-white p-6 sm:p-8 rounded-2xl shadow-lg">
+                <h2 class="text-2xl font-bold text-slate-900 mb-2">3. El Cliente y el Ambiente</h2>
+                <p class="text-slate-600 mb-6">Necesito saber para quién creamos el contenido y cómo se siente estar en tu restaurante.</p>
+                <div class="space-y-6">
+                    <div class="flex flex-col"> <!-- Added flex flex-col -->
+                        <label for="s3_ambiente" class="form-label">¿Cómo describirías el ambiente del lugar?</label>
+                        <p class="form-description">Ej: "Muy familiar, para venir con niños", "Ideal para ver el fútbol con amigos", "Relajado, para curar la cruda", "Ruidoso y alegre".</p>
+                        <textarea id="s3_ambiente" name="s3_ambiente" class="form-textarea" rows="3"></textarea>
+                    </div>
+                    <div class="flex flex-col"> <!-- Added flex flex-col -->
+                        <label for="s3_cliente_hoy" class="form-label">¿Quién es tu cliente habitual HOY?</label>
+                        <p class="form-description">Ej: "Familias completas los domingos", "Trabajadores de oficinas que vienen a comer", "Grupos de amigos los sábados".</p>
+                        <textarea id="s3_cliente_hoy" name="s3_cliente_hoy" class="form-textarea" rows="3"></textarea>
+                    </div>
+                    <div class="flex flex-col"> <!-- Added flex flex-col -->
+                        <label for="s3_cliente_nuevo" class="form-label">¿A qué tipo de cliente NUEVO te gustaría atraer?</label>
+                        <p class="form-description">Ej: "Gente más joven", "Parejas", "Más gente que pida para llevar".</p>
+                        <textarea id="s3_cliente_nuevo" name="s3_cliente_nuevo" class="form-textarea" rows="3"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Paso 4: Servicios Adicionales -->
+            <div class="form-step bg-white p-6 sm:p-8 rounded-2xl shadow-lg">
+                <h2 class="text-2xl font-bold text-slate-900 mb-6">4. Servicios Adicionales</h2>
+                <div class="space-y-6">
+                    <fieldset>
+                        <legend class="form-label">¿Qué otros servicios ofrecen? (Marca todos los que apliquen)</legend>
+                        <div class="space-y-5 mt-4"> <!-- Espaciado aumentado a 5 -->
+                            <div class="relative"> <!-- Nueva estructura para ítem con input -->
+                                <div class="flex items-center gap-x-3">
+                                    <input id="s4_delivery" name="s4_delivery" type="checkbox" class="form-checkbox">
+                                    <label for="s4_delivery" class="font-medium text-slate-900 text-base">Servicio a domicilio (Delivery)</label>
+                                </div>
+                                <div class="pl-8"> <!-- Input indentado -->
+                                    <input type="text" name="s4_delivery_details" class="form-input-text mt-2 w-full" placeholder="¿Es propio o por apps (Rappi, Didi, etc.)?">
+                                </div>
+                            </div>
+                            <div class="relative flex items-center gap-x-3"> <!-- Estructura simple para ítem solo -->
+                                <input id="s4_takeout" name="s4_takeout" type="checkbox" class="form-checkbox">
+                                <label for="s4_takeout" class="font-medium text-slate-900 text-base">Pedidos para llevar (Takeout)</label>
+                            </div>
+                            <div class="relative flex items-center gap-x-3"> <!-- Estructura simple para ítem solo -->
+                                <input id="s4_reservas" name="s4_reservas" type="checkbox" class="form-checkbox">
+                                <label for="s4_reservas" class="font-medium text-slate-900 text-base">Reservaciones</label>
+                            </div>
+                            <div class="relative flex items-center gap-x-3"> <!-- Estructura simple para ítem solo -->
+                                <input id="s4_eventos" name="s4_eventos" type="checkbox" class="form-checkbox">
+                                <label for="s4_eventos" class="font-medium text-slate-900 text-base">Espacio para eventos (cumpleaños, etc.)</label>
+                            </div>
+                            <div class="relative"> <!-- Nueva estructura para ítem con input -->
+                                <div class="flex items-center gap-x-3">
+                                    <input id="s4_musica" name="s4_musica" type="checkbox" class="form-checkbox">
+                                    <label for="s4_musica" class="font-medium text-slate-900 text-base">Música en vivo</label>
+                                </div>
+                                <div class="pl-8"> <!-- Input indentado -->
+                                    <input type="text" name="s4_musica_details" class="form-input-text mt-2 w-full" placeholder="¿Qué días?">
+                                </div>
+                            </div>
+                            <div class="relative"> <!-- Nueva estructura para ítem con input -->
+                                <div class="flex items-center gap-x-3">
+                                    <input id="s4_promos" name="s4_promos" type="checkbox" class="form-checkbox">
+                                    <label for="s4_promos" class="font-medium text-slate-900 text-base">Promociones</label>
+                                </div>
+                                <div class="pl-8"> <!-- Input indentado -->
+                                    <input type="text" name="s4_promos_details" class="form-input-text mt-2 w-full" placeholder="Ej: Jueves de 2x1, Cubetazos...">
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                    <fieldset>
+                        <legend class="form-label">¿Venden producto crudo (como la pescadería)?</legend>
+                        <div class="flex gap-x-6 mt-2">
+                            <div class="flex items-center gap-x-2">
+                                <input id="s4_crudo_si" name="s4_crudo" type="radio" value="si" class="form-radio">
+                                <label for="s4_crudo_si" class="text-slate-900 text-base">Sí</label> <!-- Added text-base -->
+                            </div>
+                            <div class="flex items-center gap-x-2">
+                                <input id="s4_crudo_no" name="s4_crudo" type="radio" value="no" class="form-radio">
+                                <label for="s4_crudo_no" class="text-slate-900 text-base">No</label> <!-- Added text-base -->
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+            </div>
+
+            <!-- Paso 5: La Competencia -->
+            <div class="form-step bg-white p-6 sm:p-8 rounded-2xl shadow-lg">
+                <h2 class="text-2xl font-bold text-slate-900 mb-2">5. La Competencia</h2>
+                <p class="text-slate-600 mb-6">¿Quién más está en el juego?</p>
+                <div class="space-y-6">
+                    <div class="flex flex-col"> <!-- Added flex flex-col -->
+                        <label for="s5_competidores" class="form-label">¿Quiénes son tus 3 principales competidores? (Otras coctelerías o restaurantes de mariscos de la zona)</label>
+                        <textarea id="s5_competidores" name="s5_competidores" class="form-textarea" rows="3"></textarea>
+                    </div>
+                    <div class="flex flex-col"> <!-- Added flex flex-col -->
+                        <label for="s5_compet_bien" class="form-label">¿Qué crees que ellos hacen bien (en su comida o en redes)? (No pasa nada por admitirlo, nos ayuda a ser mejores)</label>
+                        <textarea id="s5_compet_bien" name="s5_compet_bien" class="form-textarea" rows="3"></textarea>
+                    </div>
+                    <div class="flex flex-col"> <!-- Added flex flex-col -->
+                        <label for="s5_mejor" class="form-label">¿Qué es lo que tu negocio hace MEJOR que nadie? (Esta es nuestra "arma secreta")</label>
+                        <p class="form-description">Ej: "Nuestras porciones son más grandes", "El sazón es 100% casero", "El ambiente es más amigable", "Nadie más prepara X platillo".</p>
+                        <textarea id="s5_mejor" name="s5_mejor" class="form-textarea" rows="3"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Paso 6: Objetivos -->
+            <div class="form-step bg-white p-6 sm:p-8 rounded-2xl shadow-lg">
+                <h2 class="text-2xl font-bold text-slate-900 mb-2">6. Objetivos</h2>
+                <p class="text-slate-600 mb-6">Seamos claros sobre lo que esperamos de este trabajo.</p>
+                <fieldset>
+                    <legend class="form-label">¿Cuál es tu objetivo #1 al contratar este servicio? (Elige el más importante para ti)</legend>
+                    <div class="space-y-5 mt-4"> <!-- Espaciado aumentado a 5 -->
+                        <div class="relative flex items-center gap-x-3"> <!-- Estructura simple para ítem solo -->
+                            <input id="s6_obj_trafico" name="s6_objetivo" type="radio" value="trafico" class="form-radio">
+                            <label for="s6_obj_trafico" class="font-medium text-slate-900 text-base">Atraer más gente al local (aumentar el tráfico de comensales)</label>
+                        </div>
+                        <div class="relative flex items-center gap-x-3"> <!-- Estructura simple para ítem solo -->
+                            <input id="s6_obj_delivery" name="s6_objetivo" type="radio" value="delivery" class="form-radio">
+                            <label for="s6_obj_delivery" class="font-medium text-slate-900 text-base">Aumentar los pedidos a domicilio / para llevar</label>
+                        </div>
+                        <div class="relative flex items-center gap-x-3"> <!-- Estructura simple para ítem solo -->
+                            <input id="s6_obj_vender_mas" name="s6_objetivo" type="radio" value="vender_mas" class="form-radio">
+                            <label for="s6_obj_vender_mas" class="font-medium text-slate-900 text-base">Vender más de un platillo o bebida específica</label>
+                        </div>
+                        <div class="relative flex items-center gap-x-3"> <!-- Estructura simple para ítem solo -->
+                            <input id="s6_obj_profesional" name="s6_objetivo" type="radio" value="profesional" class="form-radio">
+                            <label for="s6_obj_profesional" class="font-medium text-slate-900 text-base">Que el restaurante se vea más profesional, moderno y "antojable"</label>
+                        </div>
+                        <div class="relative flex items-center gap-x-3"> <!-- Estructura simple para ítem solo -->
+                            <input id="s6_obj_whatsapp" name="s6_objetivo" type="radio" value="whatsapp" class="form-radio">
+                            <label for="s6_obj_whatsapp" class="font-medium text-slate-900 text-base">Recibir más mensajes/pedidos por WhatsApp</label>
+                        </div>
+                        <div class="relative"> <!-- Nueva estructura para ítem con input -->
+                            <div class="flex items-center gap-x-3">
+                                <input id="s6_obj_otro" name="s6_objetivo" type="radio" value="otro" class="form-radio">
+                                <label for="s6_obj_otro" class="font-medium text-slate-900 text-base">Otro:</label>
+                            </div>
+                            <div class="pl-8"> <!-- Input indentado -->
+                                <input type="text" name="s6_obj_otro_details" class="form-input-text mt-2 w-full" placeholder="Escribe tu objetivo principal...">
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+
+            <!-- Paso 7: Lo Visual -->
+            <div class="form-step bg-white p-6 sm:p-8 rounded-2xl shadow-lg">
+                <h2 class="text-2xl font-bold text-slate-900 mb-6">7. Lo Visual (Diseño y Contenido)</h2>
+                <div class="space-y-6">
+                    <div class="flex flex-col"> <!-- Added flex flex-col -->
+                        <label for="s7_logo" class="form-label">¿Tienen un logotipo? ¿Te gusta? ¿Lo tienes en archivo digital (alta calidad)?</label>
+                        <textarea id="s7_logo" name="s7_logo" class="form-textarea" rows="2"></textarea>
+                    </div>
+                    <div class="flex flex-col"> <!-- Added flex flex-col -->
+                        <label for="s7_visual_clave" class="form-label">¿Hay algún elemento visual clave en el restaurante?</label>
+                        <p class="form-description">Un mural, un letrero neón, una pared de fotos, algo que la gente reconozca.</p>
+                        <textarea id="s7_visual_clave" name="s7_visual_clave" class="form-textarea" rows="3"></textarea>
+                    </div>
+                    <div class="flex flex-col"> <!-- Added flex flex-col -->
+                        <label for="s7_fotos_viejas" class="form-label">¿Hay fotos o videos viejos del negocio que podamos usar?</label>
+                        <p class="form-description">Fotos de tus papás empezando, de la inauguración, etc.</p>
+                        <textarea id="s7_fotos_viejas" name="s7_fotos_viejas" class="form-textarea" rows="2"></textarea>
+                    </div>
+                    <div class="flex flex-col"> <!-- Added flex flex-col -->
+                        <label for="s7_no_mostrar" class="form-label">¿Hay algo que NO te gustaría mostrar?</label>
+                        <p class="form-description">Ej: "La cocina cuando está desordenada", "El área de baños".</p>
+                        <textarea id="s7_no_mostrar" name="s7_no_mostrar" class="form-textarea" rows="2"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Paso 8: Logística -->
+            <div class="form-step bg-white p-6 sm:p-8 rounded-2xl shadow-lg">
+                <h2 class="text-2xl font-bold text-slate-900 mb-2">8. Logística (Para grabar el contenido)</h2>
+                <p class="text-slate-600 mb-6">Esto es clave para no interrumpir tu operación.</p>
+                <div class="space-y-6">
+                    <div class="flex flex-col"> <!-- Added flex flex-col -->
+                        <label for="s8_horario" class="form-label">¿Cuál es el MEJOR día y horario para ir a grabar?</label>
+                        <p class="form-description">Buscamos un momento antes de la hora pico o en un día de poca afluencia. Ej: "Martes a las 11 am".</p>
+                        <textarea id="s8_horario" name="s8_horario" class="form-textarea" rows="2"></textarea>
+                    </div>
+                    <div class="flex flex-col"> <!-- Added flex flex-col -->
+                        <label for="s8_detras_camaras" class="form-label">¿Cuándo es el "detrás de cámaras" más interesante?</label>
+                        <p class="form-description">Ej: "Cuando llega el pescado fresco en la mañana", "Cuando preparan las bases o salsas".</p>
+                        <textarea id="s8_detras_camaras" name="s8_detras_camaras" class="form-textarea" rows="2"></textarea>
+                    </div>
+                    <div class="flex flex-col"> <!-- Added flex flex-col -->
+                        <label for="s8_emplatado" class="form-label">¿Quién es la persona de cocina que nos puede ayudar a "emplatar" bonito para la cámara? (Necesitamos que los platos se vean espectaculares)</label>
+                        <textarea id="s8_emplatado" name="s8_emplatado" class="form-textarea" rows="2"></textarea>
+                    </div>
+                    <div class="flex flex-col"> <!-- Added flex flex-col -->
+                        <label for="s8_en_camara" class="form-label">¿Estarías dispuesto a salir en cámara?</label>
+                        <p class="form-description">No tienes que ser un actor, solo ser tú. Ej: "Recomendando el platillo del día", "Contando la historia de la familia".</p>
+                        <textarea id="s8_en_camara" name="s8_en_camara" class="form-textarea" rows="2"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Paso 9: Cierre y Botón de Envío -->
+            <div class="form-step bg-teal-600 text-white p-6 sm:p-8 rounded-2xl shadow-lg text-center">
+                <h3 class="text-2xl font-bold mb-3">¡Muchas gracias por tu tiempo!</h3>
+                <p class="text-teal-50 leading-relaxed mb-6">Con esta información, puedo empezar a diseñar un calendario de contenidos que haga que a todos se les antoje visitar la Pescadería Vilma. Lo revisaremos juntos en nuestra próxima reunión.</p>
+                <button type="submit" class="w-full sm:w-auto px-10 py-4 bg-white text-teal-700 font-bold rounded-lg shadow-md transition-all duration-300 ease-in-out transform hover:scale-105 hover:bg-teal-50 focus:outline-none focus:ring-2 focus:ring-teal-200">
+                    Enviar mis Respuestas
+                </button>
+            </div>
+            
+        </form>
+        
+        <!-- Contenedor de Botones de Navegación -->
+        <div id="navigation-buttons" class="mt-8 flex justify-between">
+            <button type="button" id="prev-btn" class="nav-btn nav-btn-prev">
+                Regresar
+            </button>
+            <button type="button" id="next-btn" class="nav-btn nav-btn-next">
+                Siguiente
+            </button>
+        </div>
+
+    </div> <!-- Fin del contenedor principal -->
+
+    <!-- Footer con Disclaimer y LinkedIn -->
+    <footer class="text-center py-10 px-6">
+        <p class="text-sm text-slate-500 mb-4">
+            Toda la información proporcionada en este brief es confidencial y será utilizada únicamente para el desarrollo de la estrategia de marketing. No se divulgará ningún tipo de información a terceros.
+        </p>
+        <a href="https://www.linkedin.com/in/danielcan-innovador/" target="_blank" rel="noopener noreferrer" class="text-sm text-teal-600 hover:text-teal-700 font-medium transition-colors">
+            Conecta en LinkedIn
+        </a>
+    </footer>
+
+    <!-- JavaScript para animaciones de scroll -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            let currentStep = 0;
+            const steps = document.querySelectorAll('.form-step');
+            const progressBar = document.getElementById('progress-bar');
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+            const navButtons = document.getElementById('navigation-buttons');
+            const totalSteps = steps.length;
+
+            function showStep(index) {
+                // Ocultar todos los pasos y quitar la animación
+                steps.forEach((step, i) => {
+                    step.style.display = 'none';
+                    step.classList.remove('step-visible');
+                });
+
+                // Mostrar el paso activo
+                const activeStep = steps[index];
+                activeStep.style.display = 'block';
+                
+                // Forzar un reflow para reiniciar la animación
+                void activeStep.offsetWidth; 
+                
+                // Agregar la clase de animación
+                activeStep.classList.add('step-visible');
+
+                // Actualizar Barra de Progreso
+                // Se basa en el índice / total de pasos - 1
+                const progress = (index / (totalSteps - 1)) * 100;
+                progressBar.style.width = `${progress}%`;
+
+                // Actualizar Botones de Navegación
+                // Si es el último paso (tarjeta de envío), ocultar botones de nav
+                if (index === totalSteps - 1) {
+                    navButtons.style.display = 'none';
+                } else {
+                    navButtons.style.display = 'flex';
+                    // Ocultar "Regresar" en el primer paso (index 0)
+                    prevBtn.style.display = index === 0 ? 'none' : 'inline-block';
+                }
+                
+                currentStep = index;
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+
+            // --- Event Listeners para Navegación ---
+            nextBtn.addEventListener('click', () => {
+                if (currentStep < totalSteps - 1) {
+                    showStep(currentStep + 1);
+                }
+            });
+
+            prevBtn.addEventListener('click', () => {
+                if (currentStep > 0) {
+                    showStep(currentStep - 1);
+                }
+            });
+
+            // Mostrar el primer paso al cargar
+            showStep(0);
+
+
+            // --- Manejo del Envío del Formulario (Formspree) ---
+            const form = document.getElementById('brief-form');
+            const successMessage = document.getElementById('success-message');
+            // El botón de envío está en el último paso
+            const submitButton = form.querySelector('button[type="submit"]');
+            const originalButtonText = submitButton.innerHTML;
+
+
+            form.addEventListener('submit', (event) => {
+                event.preventDefault(); // Previene el envío real del formulario
+
+                // Muestra estado de carga
+                submitButton.innerHTML = 'Enviando...';
+                submitButton.disabled = true;
+
+                const formData = new FormData(form);
+                
+                fetch(form.action, {
+                    method: form.method,
+                    body: formData,
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                }).then(response => {
+                    if (response.ok) {
+                        // Éxito: Oculta el formulario (que ahora es solo el último paso)
+                        steps[totalSteps - 1].style.transition = 'opacity 0.5s ease-out';
+                        steps[totalSteps - 1].style.opacity = '0';
+                        
+                        setTimeout(() => {
+                            // Oculta el formulario completo
+                            form.style.display = 'none';
+                            // Oculta la barra de progreso
+                            progressBar.parentElement.style.display = 'none';
+                            
+                            // Muestra el mensaje de éxito
+                            successMessage.classList.remove('hidden');
+                            // Scroll hasta arriba suavemente
+                            window.scrollTo({ top: 0, behavior: 'smooth' });
+                        }, 500); // Espera a que termine la animación de opacidad
+                    } else {
+                        // Error de Formspree
+                        console.error('Error en la respuesta de Formspree');
+                        submitButton.innerHTML = 'Error. Intenta de nuevo.';
+                        submitButton.disabled = false;
+                        setTimeout(() => {
+                             if (!submitButton.disabled) {
+                                submitButton.innerHTML = originalButtonText;
+                             }
+                        }, 3000);
+                    }
+                }).catch(error => {
+                    // Error de red
+                    console.error('Error en fetch:', error);
+                    submitButton.innerHTML = 'Error de red. Intenta de nuevo.';
+                    submitButton.disabled = false;
+                    setTimeout(() => {
+                        if (!submitButton.disabled) {
+                            submitButton.innerHTML = originalButtonText;
+                        }
+                    }, 3000);
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>
+
+
+
+
+
+
