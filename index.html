@@ -116,14 +116,16 @@
             <!-- Esta tarjeta usa 'step-visible' para animar su entrada también -->
             <div class="step-visible bg-white p-10 rounded-2xl shadow-xl text-center">
                 <svg class="w-16 h-16 text-green-500 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                <h1 class="text-3xl font-bold text-slate-900 mb-2">¡Brief Enviado!</h1>
+                <!-- CAMBIO: Texto actualizado -->
+                <h1 class="text-3xl font-bold text-slate-900 mb-2">¡Respuestas Enviadas!</h1>
                 <p class="text-lg text-slate-600">Muchas gracias por tu tiempo, Ezequiel. He recibido tus respuestas.</p>
                 <p class="text-slate-500 mt-4">Me pondré a trabajar en la estrategia y te contactaré pronto para nuestra próxima reunión.</p>
             </div>
         </div>
 
         <!-- Encabezado (sin logo) -->
-        <header class="mb-8 text-center">
+        <!-- CAMBIO: Añadido id="main-header" -->
+        <header id="main-header" class="mb-8 text-center">
             <!-- Título Actualizado -->
             <h1 class="text-3xl sm:text-4xl font-bold text-slate-900 mb-3">Brief para creación de contenidos digitales y estrategia de marketing</h1>
             <h2 class="text-2xl sm:text-3xl font-semibold text-teal-700">Pescadería Vilma</h2>
@@ -141,7 +143,7 @@
             
             <!-- Paso 0: Introducción -->
             <div class="form-step bg-white p-6 sm:p-8 rounded-2xl shadow-lg">
-                <h3 class="text-2xl font-bold text-slate-900 mb-4">¡Hola, Ezequiel!</h3>
+                <h3 class="text-2xl font-bold text-slate-900 mb-4">¡Hola, Ezquiel!</h3>
                 <p class="text-slate-600 leading-relaxed mb-4">
                     Este documento es nuestro mapa para empezar a trabajar. El objetivo es entender el alma, el sazón y la historia de tu restaurante desde tu perspectiva.
                 </p>
@@ -452,6 +454,7 @@
             const prevBtn = document.getElementById('prev-btn');
             const nextBtn = document.getElementById('next-btn');
             const navButtons = document.getElementById('navigation-buttons');
+            const mainHeader = document.getElementById('main-header'); // CAMBIO: Obtener el header
             const totalSteps = steps.length;
 
             function showStep(index) {
@@ -541,6 +544,8 @@
                             form.style.display = 'none';
                             // Oculta la barra de progreso
                             progressBar.parentElement.style.display = 'none';
+                            // CAMBIO: Ocultar el header principal
+                            mainHeader.style.display = 'none';
                             
                             // Muestra el mensaje de éxito
                             successMessage.classList.remove('hidden');
